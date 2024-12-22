@@ -1,0 +1,86 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              12/16/2024 15:34:12 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "first.h"
+   2          // 主函数
+   3          void main() 
+   4          {
+   5   1          int temperature;
+   6   1          bit heating = 1;
+   7   1      
+   8   1          lcd_init();       // 初始化 LCD
+   9   1          RELAY = 1;        // 初始状态打开继电器
+  10   1      
+  11   1          while (1) 
+  12   1          {
+  13   2              temperature = ds18b20_read_temperature();
+  14   2              
+  15   2              if(temperature != -999)  // 确保读取成功
+  16   2              {
+  17   3                  // 控制加热逻辑
+  18   3                  if (temperature >= 10000)    // 100.00度
+  19   3                  {
+  20   4                      RELAY = 0;  // 停止加热
+  21   4                      heating = 0;
+  22   4                  } 
+  23   3                  else if (temperature < 9000)  // 90.00度
+  24   3                  {
+  25   4                      RELAY = 1;  // 开始加热
+  26   4                      heating = 1;
+  27   4                  }
+  28   3      
+  29   3                  // LCD 显示温度和状态
+  30   3                  lcd_command(0x80);  // 第一行
+  31   3                  lcd_display_string("Temp: ");
+  32   3                  lcd_display_integer(temperature/100);
+  33   3                  lcd_display_string(".");
+  34   3                  if((temperature%100) < 10)
+  35   3                      lcd_display_string("0");
+  36   3                  lcd_display_integer(temperature%100);
+  37   3                  lcd_display_string("C  ");
+  38   3      
+  39   3                  lcd_command(0xC0);  // 第二行
+  40   3                  if (heating) 
+  41   3                  {
+  42   4                      lcd_display_string("Heating: ON ");
+  43   4                  } 
+  44   3                  else 
+  45   3                  {
+  46   4                      lcd_display_string("Heating: OFF");
+  47   4                  }
+  48   3              }
+  49   2              else 
+  50   2              {
+  51   3                  // 显示错误信息
+  52   3                  lcd_command(0x80);
+  53   3                  lcd_display_string("Temp Error    ");
+  54   3                  lcd_command(0xC0);
+C51 COMPILER V9.60.7.0   MAIN                                                              12/16/2024 15:34:12 PAGE 2   
+
+  55   3                  lcd_display_string("Check Sensor  ");
+  56   3              }
+  57   2              
+  58   2              delay_ms(1);  // 读取间隔
+  59   2          }
+  60   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    220    ----
+   CONSTANT SIZE    =     71    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

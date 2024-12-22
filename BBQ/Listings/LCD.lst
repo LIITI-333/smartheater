@@ -1,0 +1,105 @@
+C51 COMPILER V9.60.7.0   LCD                                                               12/16/2024 15:34:12 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\Objects\LCD.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE LCD.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\LCD.l
+                    -st) TABS(2) OBJECT(.\Objects\LCD.obj)
+
+line level    source
+
+   1          #include "first.h"
+   2          
+   3          // LCD 初始化
+   4          void lcd_init() 
+   5          {
+   6   1          delay_ms(15);
+   7   1          lcd_command(0x38);  // 8位模式、2行、5x7点阵
+   8   1          delay_ms(1);
+   9   1          lcd_command(0x0C);  // 显示开启，光标关闭
+  10   1          delay_ms(1);
+  11   1          lcd_command(0x06);  // 光标右移
+  12   1          delay_ms(1);
+  13   1          lcd_command(0x01);  // 清屏
+  14   1          delay_ms(2);
+  15   1      }
+  16          
+  17          // 发送命令到 LCD
+  18          void lcd_command(unsigned char cmd) 
+  19          {
+  20   1          RS = 0; 
+  21   1          RW = 0;       
+  22   1          LCD_DATA = cmd;
+  23   1          EN = 1;
+  24   1          delay_ms(1);
+  25   1          EN = 0;
+  26   1      }
+  27          
+  28          // 发送数据到 LCD
+  29          void lcd_data(unsigned char mata) 
+  30          {
+  31   1          RS = 1; 
+  32   1          RW = 0;       
+  33   1          LCD_DATA = mata;
+  34   1          EN = 1;
+  35   1          delay_ms(1);
+  36   1          EN = 0;
+  37   1      }
+  38          
+  39          // 显示字符串
+  40          void lcd_display_string(char *str) 
+  41          {
+  42   1          while (*str) 
+  43   1          {
+  44   2              lcd_data(*str++);
+  45   2          }
+  46   1      }
+  47          
+  48          // 显示整数
+  49          void lcd_display_integer(int value) 
+  50          {
+  51   1          char buffer[6];
+  52   1          unsigned char i = 0;
+  53   1          unsigned char is_negative = 0;
+  54   1          
+C51 COMPILER V9.60.7.0   LCD                                                               12/16/2024 15:34:12 PAGE 2   
+
+  55   1          if (value < 0) 
+  56   1          {
+  57   2              is_negative = 1;
+  58   2              value = -value;
+  59   2          }
+  60   1          
+  61   1          // 转换数字到字符串
+  62   1          do 
+  63   1          {
+  64   2              buffer[i++] = value % 10 + '0';
+  65   2              value /= 10;
+  66   2          } while (value);
+  67   1          
+  68   1          // 添加负号（如果是负数）
+  69   1          if (is_negative) 
+  70   1          {
+  71   2              buffer[i++] = '-';
+  72   2          }
+  73   1          
+  74   1          // 反转字符串并显示
+  75   1          while (i > 0) 
+  76   1          {
+  77   2              lcd_data(buffer[--i]);
+  78   2          }
+  79   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    235    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

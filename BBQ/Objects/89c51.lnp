@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\DS18B20.obj",
+".\Objects\LCD.obj",
+".\Objects\DELAY.obj" 
+TO ".\Objects\89c51" 
+PRINT(".\Listings\89c51.m51")
